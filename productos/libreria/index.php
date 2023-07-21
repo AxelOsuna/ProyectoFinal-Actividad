@@ -14,14 +14,24 @@ if (isset($_GET['txtID'])) {
     $sentencia = $conexion->prepare("DELETE FROM `libreria` WHERE id = :id");
     $sentencia->bindValue(":id",$txtID);
     $sentencia->execute();
-    header("Location:index.php");
+    
+    header("Location:index.php?mensaje=Registro eliminado");
 }
 
 $sentencia = $conexion->prepare("SELECT * FROM `libreria`");
 $sentencia->execute();
 $libreria = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 require_once("../../templates/header.php");
-?>
+if(isset($_GET['mensaje'])) { ?>
+
+    <script>
+        Swal.fire({
+            icon: "success",
+            title: "<?php echo $_GET['mensaje']; ?>"
+        });
+    </script>
+
+<?php } ?>
 <div class="card">
     <div class="card-header">
        <h1>Lista de articulos de libreria</h1>
@@ -54,16 +64,33 @@ require_once("../../templates/header.php");
                         <td><?php echo $registro ['precio']; ?></td>
                         <td><?php echo $registro ['fecha de ingreso']; ?></td>
                         <td>
-                        <a name="btneditar" id="btneditar" class="btn btn-primary" href="editar.php?txtID=<?php echo $registro ['id']; ?>" role="button">Editar</a>
-                        <a name="btnborrar" id="btnborrar" class="btn btn-danger" href="index.php?txtID=<?php echo $registro ['id']; ?>" role="button">Borrar</a>
+                        <a name="btneditar" id="btneditar" class="btn btn-primary" 
+                        href="editar.php?txtID=<?php echo $registro ['id']; ?>" role="button">Editar</a>
+                        <a name="" id="" class="btn btn-danger" 
+                        href="javascript:borrar(<?php echo $registro['id']; ?>);" role="button">Borrar</a>
                         </td>
                     </tr>
                     <?php } ?>
                 </tbody>
             </table>
         </div>
-            
-
     </div>
 </div>
+<script>
+    function borrar(id){
+        Swal.fire({
+  title: 'Esta seguro que desea eliminar?',
+  text: "No se puede revertir",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Si, borrarlo'
+}).then((result) => {
+  if (result.isConfirmed) {
+    window.location="index.php?txtID="+id;
+  }
+})
+</script>
+
 <?php require_once("../../templates/footer.php"); ?>
