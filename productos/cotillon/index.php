@@ -1,0 +1,71 @@
+<?php 
+require_once("../../bd.php");
+if (isset($_GET['txtID'])) {
+    $txtID = (isset($_GET ['txtID'])) ? $_GET ['txtID']:"";
+
+    $sentencia = $conexion->prepare("SELECT foto FROM `cotillon` WHERE `id`=:id");
+    $sentencia->bindValue(":id", $txtID);
+    $sentencia->execute();
+    $registro_recuperado=$sentencia->fetch(PDO::FETCH_LAZY);
+    if (isset($registro_recuperado["foto"]) && $registro_recuperado["foto"] !="" ) {
+        if(file_exists("../../imgCotillon/" . $registro_recuperado["foto"])) {
+            unlink("../../imgCotillon/" . $registro_recuperado["foto"]);
+        }
+    }
+    $sentencia = $conexion->prepare("DELETE FROM `cotillon` WHERE id = :id");
+    $sentencia->bindValue(":id",$txtID);
+    $sentencia->execute();
+    header("Location:index.php");
+}
+
+$sentencia = $conexion->prepare("SELECT * FROM `cotillon`");
+$sentencia->execute();
+$cotillon = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+require_once("../../templates/header.php");
+?>
+<div class="card">
+    <div class="card-header">
+       <h1>Lista de articulos de cotillon</h1>
+    <a name="" id="" class="btn btn-primary" href="crear.php" role="button">Agregar producto</a>
+    
+    
+    </div>
+    <div class="card-body">
+        <div class="table-responsive-sm">
+            <table class="table" id="tabla_id">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Foto</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Precio $</th>
+                        <th scope="col">Fecha de ingreso</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cotillon as $registro) { ?>
+                    <tr class="">
+                        <td scope="row"><?php echo $registro ['id']; ?></td>
+                        <td><?php echo $registro ['producto']; ?></td>
+                        <td><img width="50" src="<?php echo $registro ['foto']; ?>"
+                            class="img-fluid rounded" alt="" />
+                        <td scope="row"><?php echo $registro ['stock']; ?></td>
+                        <td><?php echo $registro ['precio']; ?></td>
+                        <td><?php echo $registro ['fecha de ingreso']; ?></td>
+                        <td>
+                        <a name="btneditar" id="btneditar" class="btn btn-primary" href="editar.php?txtID=<?php echo $registro ['id']; ?>" role="button">Editar</a>
+                            <a name="btnborrar" id="btnborrar" class="btn btn-danger" href="index.php?txtID=<?php echo $registro ['id']; ?>" role="button">Borrar</a>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+            
+
+    </div>
+</div>
+<?php require_once("../../templates/footer.php"); ?>
