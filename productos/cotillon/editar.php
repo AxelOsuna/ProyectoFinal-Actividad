@@ -53,8 +53,9 @@ if ($_POST) {
     $sentencia->bindValue(":foto", $nombreArchivo_foto_con_ruta);
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-
+      
     }
+    header("Location:index.php?mensaje=Producto editado correctamente");  
 }
 
 require_once("../../templates/header.php");

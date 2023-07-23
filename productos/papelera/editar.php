@@ -56,6 +56,7 @@ if ($_POST) {
 
 
     }
+    header("Location:index.php?mensaje=Producto editado correctamente"); 
 } 
 require_once("../../templates/header.php"); 
 ?>

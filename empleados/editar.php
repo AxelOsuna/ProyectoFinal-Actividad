@@ -79,7 +79,8 @@ if ($_POST) {
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
 
-    }   
+    } 
+     header("Location:index.php?mensaje=Empleado editado correctamente");   
 }
 
 require_once("../templates/header.php"); 

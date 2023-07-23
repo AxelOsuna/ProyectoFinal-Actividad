@@ -20,14 +20,15 @@ if ($_POST) {
     $nombreArchivo_foto_con_ruta = "../../imgLibreria/" . $nombreArchivo_foto;
     $tmp_foto = $_FILES["foto"]['tmp_name']; 
     if ($tmp_foto !=''){
-    move_uploaded_file($tmp_foto, $nombreArchivo_foto_con_ruta);
+      move_uploaded_file($tmp_foto, $nombreArchivo_foto_con_ruta);
     }   
     $sentencia->bindValue(":foto", $nombreArchivo_foto_con_ruta);
     $sentencia->execute();
+    header("Location:index.php?mensaje=Producto creado correctamente");
 }
-
 require_once("../../templates/header.php");
 ?>
+
 <div class="card">
     <div class="card-header">
         <h1>Datos del producto</h1>

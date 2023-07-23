@@ -29,7 +29,7 @@ if($_POST) {
     $sentencia->bindValue(":correo", $correo);
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje=Usuario editado correctamente");
 }
 require_once("../templates/header.php") ?>
 <div class="card">
