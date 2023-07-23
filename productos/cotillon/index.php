@@ -15,7 +15,7 @@ if (isset($_GET['txtID'])) {
     $sentencia = $conexion->prepare("DELETE FROM `cotillon` WHERE id = :id");
     $sentencia->bindValue(":id",$txtID);
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje=Registro eliminado");
 }
 
 $sentencia = $conexion->prepare("SELECT * FROM `cotillon`");
@@ -23,7 +23,15 @@ $sentencia->execute();
 $cotillon = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
 require_once("../../templates/header.php");
-?>
+if (isset($_GET["mensaje"])) { ?>
+    <script>
+    Swal.fire({
+    icon: "success",
+    title: "<?php echo $_GET['mensaje']; ?>"
+});
+</script>
+<?php } ?>
+
 <div class="card">
     <div class="card-header">
        <h1>Lista de articulos de cotillon</h1>
@@ -50,14 +58,17 @@ require_once("../../templates/header.php");
                     <tr class="">
                         <td scope="row"><?php echo $registro ['id']; ?></td>
                         <td><?php echo $registro ['producto']; ?></td>
-                        <td><img width="50" src="<?php echo $registro ['foto']; ?>"
-                            class="img-fluid rounded" alt="" />
-                        <td scope="row"><?php echo $registro ['stock']; ?></td>
+                        <td>
+                            <img width="50" src="<?php echo $registro ['foto']; ?>"
+                            class="img-fluid rounded" src="../../imgCotillon/<?php echo $registro['foto']; ?>" alt="" />
+                        </td>
+                        <td><?php echo $registro ['stock']; ?></td>
                         <td><?php echo $registro ['precio']; ?></td>
                         <td><?php echo $registro ['fecha de ingreso']; ?></td>
                         <td>
                         <a name="btneditar" id="btneditar" class="btn btn-primary" href="editar.php?txtID=<?php echo $registro ['id']; ?>" role="button">Editar</a>
-                            <a name="btnborrar" id="btnborrar" class="btn btn-danger" href="index.php?txtID=<?php echo $registro ['id']; ?>" role="button">Borrar</a>
+                        <a name="" id="" class="btn btn-danger" 
+                        href="javascript:borrar(<?php echo $registro['id']; ?>)" role="button">Eliminar</a>
                         </td>
                     </tr>
                     <?php } ?>
@@ -68,4 +79,21 @@ require_once("../../templates/header.php");
 
     </div>
 </div>
+<script>
+function borrar(id) {
+    Swal.fire({
+        title: 'Desea borrar el empleado?',
+        text: "No vas a poder recuperarlo si lo borras!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrarlo!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = "index.php?txtID=" + id;
+        }
+    })
+}
+</script>
 <?php require_once("../../templates/footer.php"); ?>

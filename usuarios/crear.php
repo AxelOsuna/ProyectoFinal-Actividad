@@ -13,7 +13,7 @@ if($_POST) {
     $sentencia->bindValue(":password",$password);
     $sentencia->bindValue(":correo", $correo);
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje=Usuario creado correctamente");
     //si algo no funciona, utilizar la supervaribale print_r($__POST)
 
 }

@@ -23,13 +23,12 @@ if ($_POST) {
       move_uploaded_file($tmp_foto, $nombreArchivo_foto_con_ruta);
     }   
     $sentencia->bindValue(":foto", $nombreArchivo_foto_con_ruta);
-    
     $sentencia->execute();
+    header("Location:index.php?mensaje=Producto creado correctamente");
 }
 require_once("../../templates/header.php"); 
-
-
 ?>
+
 <div class="card">
     <div class="card-header">
         Datos del producto

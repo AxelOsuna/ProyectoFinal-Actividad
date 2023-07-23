@@ -35,6 +35,7 @@ if($_POST) {
     }
     $sentencia->bindValue(":cv", $nombreArchivo_cv_con_ruta);
     $sentencia->execute();
+    header("Location:index.php?mensaje=Empleado creado correctamente");
   }
 
 

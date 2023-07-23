@@ -1,21 +1,26 @@
 <?php 
 require_once("../bd.php");
-if(isset($_GET["txtID"])) { //logica para eliminar un user
-    //recolectar datos del metodo GET
+if(isset($_GET["txtID"])) { 
     $txtID = (isset($_GET["txtID"]) ? $_GET["txtID"] : "");
-    //preparar la eliminacion de los datos
     $sentencia = $conexion->prepare("DELETE FROM `usuarios` WHERE `id`=:id");
-    //Asignamos los valores que vienen del metodo GET a la consulta
     $sentencia->bindValue(":id", $txtID);
     $sentencia->execute();
-    header("Location:index.php");
+    header("Location:index.php?mensaje=Registro eliminado");
 }
     $sentencia = $conexion->prepare("SELECT * FROM `usuarios`");
     $sentencia->execute();
     $usuarios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    
 
-?>
-<?php require_once("../templates/header.php") ?>
+require_once("../templates/header.php"); 
+if (isset($_GET["mensaje"])) { ?>
+    <script>
+    Swal.fire({
+    icon: "success",
+    title: "<?php echo $_GET['mensaje']; ?>"
+});
+</script>
+<?php } ?>
 <h1>Usuarios</h1>
 <div class="card">
     <div class="card-header">
@@ -44,26 +49,40 @@ if(isset($_GET["txtID"])) { //logica para eliminar un user
                     <?php echo $registro ['usuario']; ?>
                 </td>
                 <td>
-                    <?php echo $registro ['password']; ?>
+                <?php echo str_repeat('*', strlen($registro['password'])); ?>
                 </td>
                 <td>
                     <?php echo $registro ['correo']; ?>
                 </td>
                 <td>
-                <a name="" id="" class="btn btn-success"
+                <a name="" id="" class="btn btn-primary"
                  href="editar.php?txtID=<?php echo $registro['id']; ?>" role="button">Editar</a>
-                    <a name="" id="" class="btn btn-danger" 
-                    href="index.php?txtID=<?php echo $registro['id']; ?> " role="button">Eliminar</a>
+                 <a name="" id="" class="btn btn-danger" 
+                        href="javascript:borrar(<?php echo $registro['id']; ?>)" role="button">Eliminar</a>
                 
-            </tr>
-            <?php } ?>
-        </tbody>
-    </table>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
-
-
-</div>
-
+<script>
+function borrar(id) {
+    Swal.fire({
+        title: 'Desea borrar el empleado?',
+        text: "No vas a poder recuperarlo si lo borras!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrarlo!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = "index.php?txtID=" + id;
+        }
+    })
+}
+</script>
 
 
 <?php require_once('../templates/footer.php') ?>
